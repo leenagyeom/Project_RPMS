@@ -1,0 +1,35 @@
+
+<div class="middle">
+    <form method="post" action="/upload" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="업로드">
+    </form>
+    {% if filename %}
+    <div>
+        <img src="{{ filename }}" alt = "{{ filename }}" width=640>
+    </div>
+</div>
+<div class="right">
+    <div>
+        <table id="users">
+            <thead>
+                <tr>
+                  <th>이름</th>
+                  <th>차량번호</th>
+                  <th>주차요금</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for item in results %}
+                <tr><td>{{ results[item][0] }}</td><td>{{ item }}</td><td>{{results[item][1]}}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div>    
+        <h3>사진을 업로드해주세요.</h3>
+    </div>
+    {% endif %}
+    
+</div>
