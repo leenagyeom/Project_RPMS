@@ -23,6 +23,7 @@ Usage - formats:
                                          yolov5s.tflite             # TensorFlow Lite
                                          yolov5s_edgetpu.tflite     # TensorFlow Edge TPU
 """
+import shutil
 import datetime
 import subprocess
 import argparse
@@ -176,15 +177,20 @@ def run(
                         path = '/home/groom/yolov5/runs/detect/'
                         exp_list = os.listdir(path)
                         exp_list = sorted(exp_list)
-                        plate_imgs = glob.glob(os.path.join(path, exp_list[-1], 'crops', 'plate', '*'))
+                        plate_imgs_path = os.path.join(path, exp_list[-1], 'crops', 'plate', '*')
+                        plate_imgs = glob.glob(plate_imgs_path)
                         plate_imgs = sorted(plate_imgs)
-                        print(plate_imgs)
+                        # print(plate_imgs)
+                        image = 0
                         if len(plate_imgs) > 10 :
-                            image = plate_imgs[-5:]
-                            #d = datetime.datetime.now()
-                            #filename = d.strftime("%Y%m%d_%H%M%S")
+                            image = plate_imgs[-1]
+                            print(image)
+                            d = datetime.datetime.now()
+                            filename = d.strftime("%Y%m%d_%H%M%S")
                             #subprocess.call(f"sshpass -p MUrqn0fbSOjirCWOc9 ssh -P 52140 root@15.165.136.161 'mkdir /workspace/RMPS_Realtime/{filename}'")
-                            subprocess.call(f'sshpass -p MUrqn0fbSOjirCWOc9 scp -P 52140 {image[0]} {image[1]} {image[2]} {image[3]} {image[4]} root@15.165.136.161:/workspace/RPMS_Realtime/remote_images', shell=True)
+                            subprocess.call(f'sshpass -p HB50IID8niqOG2hWn3Ytx scp -P 54474 {image} root@43.200.108.65:/workspace/RPMS/static/remote_images/{filename}.png', shell=True)
+                            for file in plate_imgs :
+                                os.remove(file)
 
             # Stream results
             im0 = annotator.result()
@@ -264,9 +270,11 @@ def parse_opt():
 
 def main(opt):
     exp_path = glob.glob(os.path.join('/home/groom/yolov5/runs/detect/', '*'))
-    if len(exp_path) > 9:
+    print(exp_path)
+    if len(exp_path) > 8:
         for e in exp_path:
-            os.remove(e)
+            print(e)
+            shutil.rmtree(e)
     check_requirements(exclude=('tensorboard', 'thop'))
     run(**vars(opt))
 
